@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:25 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/24 21:38:51 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/04/27 21:46:12 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void pipix_init(t_pipix *pipix,char **envp,char **args,int ac)
 		ft_putstr_fd("pipix: ",2);
 		ft_putstr_fd(args[1],2);
 		ft_putstr_fd(": No such file or directory\n",2);
-		exit(1);
 	}
 	pipix->fd_out = open(args[ac - 1], O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (pipix->fd_out == -1)
@@ -30,7 +29,6 @@ void pipix_init(t_pipix *pipix,char **envp,char **args,int ac)
 		ft_putstr_fd("pipix: ",2);
 		ft_putstr_fd(args[ac - 1],2);
 		ft_putstr_fd(": No such file or directory\n",2);
-		exit(1);
 	}
 }
 
@@ -40,6 +38,7 @@ int main(int ac,char **av,char **env)
 	char **path;
 	char *cmd;
 	char **args;
+	int status;
 	int i;
 	
 	if (ac != 5)
@@ -50,6 +49,7 @@ int main(int ac,char **av,char **env)
 	else
 	{
 		pipix_init(&pipix,env,av,ac);
+		parse(ac,av,env);
 		path = get_path(pipix.envp);
 		i = 2;
 		pipe(pipix.fd);
@@ -57,11 +57,16 @@ int main(int ac,char **av,char **env)
 		{
 			cmd = get_cmd(path,av[i]);
 			args = get_args(av[i]);
-			// args[0] = cmd;
-			dprintf(2,"%s,%s",args[0],args[1]);
 			pipe_handle(&pipix,cmd,args,i);
 			i++;
 		}
+		i = 0;
+		while (i < 2)
+		{
+			waitpid(pipix.pid[i],&status,0);
+			i++;
+		}
 	}
-	return (0);
+
+	return ((((status) >> 8) & 0x0000ff));
 }

@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:49 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/24 21:07:05 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/04/27 20:21:06 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_pipix
 	int		fd_in;
 	int		fd_out;
 	int		ac;
+	int		pid[2];
 }					t_pipix;
 
 void parse(int ac,char **av,char **envp);

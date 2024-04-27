@@ -1,0 +1,16 @@
+exec.c
+exec.o
+ft_printf
+libft
+ls
+main.c
+main.o
+Makefile
+no_per
+out
+parse.c
+parse.o
+pipex
+pipix.h
+tt
+ttt
