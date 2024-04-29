@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:49 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/27 20:21:06 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/04/28 15:19:09 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_pipix
 	int		pid[2];
 }					t_pipix;
 
-void parse(int ac,char **av,char **envp);
+void parse(int ac,char **av);
 void pipe_handle(t_pipix *pipix,char *cmd,char **args,int i);
 void first_exec(t_pipix *pipix);
 void execute(char *cmd,char **args,char **envp);

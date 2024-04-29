@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:30:46 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/27 21:46:46 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:44:36 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,22 @@ char *get_cmd(char **path,char *cmd)
 {
 	int i;
 	char *tmp;
+	char	*tmp1;
 	char **test;
 	
 	i = 0;
+	test = ft_split(cmd,' ');
 	while (path && path[i])
 	{	
-		test = ft_split(cmd,' ');
-		tmp = ft_strjoin(ft_strdup(path[i]),"/");
-		tmp = ft_strjoin(tmp,test[0]);
+		tmp1 = ft_strjoin(ft_strdup(path[i]),"/");
+		tmp = ft_strjoin(tmp1,test[0]);
 		if (access(tmp,F_OK & X_OK) == 0)
-			return (tmp);
+			return (ft_free2d(test),tmp);
+		free(tmp1);
+		free(tmp);
 		i++;
 	}
-	return (NULL);
+	return (ft_free2d(test),NULL);
 }
 
 char **get_args(char *cmd)
@@ -86,7 +89,11 @@ int check_outfile_access(char *file)
 void execute(char *cmd,char **args,char **envp)
 {
 	if (execve(cmd,args,envp) == -1)
+	{
+		free(cmd);
+		ft_free2d(args);
 		perror("excve");
+	}
 }
 
 void first_exec(t_pipix *pipix)
@@ -120,49 +127,31 @@ void pipe_handle(t_pipix *pipix,char *cmd,char **args,int i)
 		if (!check_access(cmd))
 		{
 			ft_putstr_fd("command not found\n",2);
+			free(cmd);
+			ft_free2d(args);
 			exit(127);
 		}
 		execute(cmd,args,pipix->envp);
 	}
 	else
 	{
-		free(cmd);
-		free(args);
 		if (i != 2)
-		{
-			close(pipix->fd[0]);
-			close(pipix->fd_out);	
-		}
+			(close(pipix->fd[0]), close(pipix->fd_out));	
 		if (i != pipix->ac - 2)
 		{
 			close(pipix->fd_in);
 			close(pipix->fd[1]);
-		}	
+		}
+	}
 }
-}
-void parse(int ac,char **av,char **envp)
+void parse(int ac,char **av)
 {
-	char **path;
-	char *cmd;
-	char *cmd1;
-	char **args;
-	char *infile;
-	char *outfile;
 	int i;
 
 	i = 0;
-	path = get_path(envp);
-	cmd = get_cmd(path,av[2]);
-	cmd1 = get_cmd(path,av[3]);
-	args = get_args(cmd);
 	if (ac == 5)
 	{
-		if (check_infile_access(av[1]) && check_outfile_access(av[ac - 1]))
-		{
-			infile = av[1];
-			outfile = av[ac - 1];
-		}
-		else
+		if (!check_infile_access(av[1]) && !check_outfile_access(av[ac - 1]))
 			perror("pipix: file not found\n");
 	}
 	else

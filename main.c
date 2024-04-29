@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:25 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/27 21:46:12 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/04/28 16:05:57 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int main(int ac,char **av,char **env)
 	else
 	{
 		pipix_init(&pipix,env,av,ac);
-		parse(ac,av,env);
+		parse(ac,av);
 		path = get_path(pipix.envp);
 		i = 2;
 		pipe(pipix.fd);
@@ -58,6 +58,8 @@ int main(int ac,char **av,char **env)
 			cmd = get_cmd(path,av[i]);
 			args = get_args(av[i]);
 			pipe_handle(&pipix,cmd,args,i);
+			ft_free2d(args);
+			free(cmd);
 			i++;
 		}
 		i = 0;
@@ -66,6 +68,7 @@ int main(int ac,char **av,char **env)
 			waitpid(pipix.pid[i],&status,0);
 			i++;
 		}
+		ft_free2d(path);
 	}
 
 	return ((((status) >> 8) & 0x0000ff));
