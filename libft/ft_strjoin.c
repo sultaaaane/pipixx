@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 20:13:12 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/29 17:46:23 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/09 15:25:28 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,12 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	s2_len;
 	char	*str;
 
-	printf("%s\n",s1);
 	if (!s1 && !s2)
-		return (ft_strdup(""));
+		return (NULL);
 	if (!s1)
-		return (ft_strdup(s2));
+		return (s2);
 	if (!s2)
-		return (ft_strdup(s1));
+		return (s1);
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
 	str = malloc((s1_len + s2_len + 1) * sizeof(char));

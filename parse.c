@@ -6,12 +6,12 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:30:46 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/29 17:44:36 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:44:18 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipix.h"
-
+#include <errno.h>
 char **get_path(char **envp)
 {
 	int		i;
@@ -41,6 +41,8 @@ char *get_cmd(char **path,char *cmd)
 	char **test;
 	
 	i = 0;
+	tmp = NULL;
+	tmp1 = NULL;
 	test = ft_split(cmd,' ');
 	while (path && path[i])
 	{	
@@ -48,7 +50,6 @@ char *get_cmd(char **path,char *cmd)
 		tmp = ft_strjoin(tmp1,test[0]);
 		if (access(tmp,F_OK & X_OK) == 0)
 			return (ft_free2d(test),tmp);
-		free(tmp1);
 		free(tmp);
 		i++;
 	}
@@ -86,10 +87,14 @@ int check_outfile_access(char *file)
 	return (0);
 }
 
-void execute(char *cmd,char **args,char **envp)
+void execute(t_pipix *pipix,char *cmd,char **args,char **envp)
 {
+	// int fd_in;	
+	(void)pipix;
 	if (execve(cmd,args,envp) == -1)
 	{
+		if (errno == EISDIR)
+			perror("is a directory\n");
 		free(cmd);
 		ft_free2d(args);
 		perror("excve");
@@ -131,7 +136,7 @@ void pipe_handle(t_pipix *pipix,char *cmd,char **args,int i)
 			ft_free2d(args);
 			exit(127);
 		}
-		execute(cmd,args,pipix->envp);
+		execute(pipix,cmd,args,pipix->envp);
 	}
 	else
 	{

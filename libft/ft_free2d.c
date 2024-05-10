@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 17:57:37 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/19 21:14:41 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/09 15:08:21 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_free2d(char **str)
 	int	i;
 
 	i = 0;
-	if(!str)
+	if(!str )
 		return ;
 	while (str[i])
 	{
