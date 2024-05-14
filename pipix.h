@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:49 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/09 17:43:05 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:27:43 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,6 @@ int			check_access(char *cmd);
 char		**get_args(char *cmd);
 char		*get_cmd(char **path, char *cmd);
 char		**get_path(char **envp);
-
+void		pipe_handle_helper(t_pipix *pipix, int i);
+int cmd_check(char *cmd);
 #endif

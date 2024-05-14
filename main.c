@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:25 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/14 11:49:07 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:25:40 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,46 +26,51 @@ void	pipix_init(t_pipix *pipix, char **envp, char **args, int ac)
 	pipix->file_out = args[ac - 1];
 }
 
+void	main_helper(t_pipix *pipix, int ac, char **av, char **path)
+{
+	int		i;
+	char	*cmd;
+	char	**args;
+
+	cmd = NULL;
+	args = NULL;
+	i = 2;
+	while (i < ac - 1)
+	{
+		cmd = get_cmd(path, av[i]);
+		args = get_args(av[i]);
+		pipe_handle(pipix, cmd, args, i);
+		ft_free2d(args);
+		free(cmd);
+		i++;
+	}
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_pipix	pipix;
 	char	**path;
-	char	*cmd;
-	char	**args;
 	int		status;
 	int		i;
 
-	args = NULL;
-	cmd = NULL;
-	path = NULL;
 	if (ac != 5)
 	{
-		ft_putstr_fd("pipix: usage: pipix [file] [cmd] [file]\n", 2);
+		ft_putstr_fd("pipix: usage: pipix [file] [cmd] [cmd] [file]\n", 2);
 		return (1);
 	}
 	else
 	{
 		pipix_init(&pipix, env, av, ac);
 		path = get_path(pipix.envp);
-		i = 2;
 		pipe(pipix.fd);
-		while (i < ac - 1)
-		{
-			cmd = get_cmd(path, av[i]);
-			args = get_args(av[i]);
-			pipe_handle(&pipix, cmd, args, i);
-			ft_free2d(args);
-			free(cmd);
-			i++;
-		}
+		main_helper(&pipix, ac, av, path);
 		i = 0;
 		while (i < 2)
 		{
 			waitpid(pipix.pid[i], &status, 0);
 			i++;
 		}
-		if (path)
-			ft_free2d(path);
+		ft_free2d(path);
 	}
 	return ((((status) >> 8) & 0x0000ff));
 }

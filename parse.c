@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:30:46 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/14 11:49:59 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/14 11:56:00 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,43 +57,6 @@ void	first_exec(t_pipix *pipix)
 	close(pipix->fd[1]);
 }
 
-void	pipe_handle(t_pipix *pipix, char *cmd, char **args, int i)
-{
-	pipix->pid[i - 2] = fork();
-	if (pipix->pid[i - 2] == 0)
-	{
-		if (i == 2)
-			first_exec(pipix);
-		if (i == pipix->ac - 2)
-		{
-			if (pipix->fd_out == -1)
-				exit(1);
-			close(pipix->fd[1]);
-			dup2(pipix->fd[0], 0);
-			close(pipix->fd[0]);
-			dup2(pipix->fd_out, 1);
-			close(pipix->fd_out);
-		}
-		if (!check_access(cmd))
-		{
-			ft_putstr_fd("command not found\n", 2);
-			free(cmd);
-			ft_free2d(args);
-			exit(127);
-		}
-		execute(pipix, cmd, args, pipix->envp);
-	}
-	else
-	{
-		if (i != 2)
-			(close(pipix->fd[0]), close(pipix->fd_out));
-		if (i != pipix->ac - 2)
-		{
-			close(pipix->fd_in);
-			close(pipix->fd[1]);
-		}
-	}
-}
 void	parse(int ac, char **av)
 {
 	int	i;
