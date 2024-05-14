@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 11:52:50 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/14 16:50:43 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/14 22:10:32 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,8 @@ int cmd_check(char *cmd)
 {
 	if (cmd && (cmd[0] == '.' || cmd[0] == '/'))
 	{
-		if (access(cmd,X_OK) != 0)
+		if (access(cmd,X_OK) == 0)
 			return (0);	
 	}
-	else if ((access(cmd, F_OK & X_OK) == 0))
-		return (0);
 	return (1);
 }
