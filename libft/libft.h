@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/04 16:06:19 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/04/19 21:21:22 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/11 15:05:24 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@
 #  define BUFFER_SIZE 100
 # endif
 
+# include <fcntl.h>
+# include <limits.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <sys/wait.h>
 # include <unistd.h>
-# include <fcntl.h>
 
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);

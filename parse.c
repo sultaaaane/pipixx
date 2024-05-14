@@ -6,102 +6,47 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:30:46 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/09 17:44:18 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/14 11:49:59 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipix.h"
 #include <errno.h>
-char **get_path(char **envp)
+
+char	**get_path(char **envp)
 {
 	int		i;
 	char	**path;
+
 	i = 0;
-	
 	path = NULL;
 	if (!envp)
 		return (NULL);
 	while (envp[i])
 	{
-		if (!ft_strncmp(envp[i],"PATH=",5))
+		if (!ft_strncmp(envp[i], "PATH=", 5))
 		{
-			path = ft_split(envp[i],':');
-			break;
-		}	
+			path = ft_split(envp[i], ':');
+			break ;
+		}
 		i++;
 	}
 	return (path);
 }
 
-char *get_cmd(char **path,char *cmd)
+void	execute(t_pipix *pipix, char *cmd, char **args, char **envp)
 {
-	int i;
-	char *tmp;
-	char	*tmp1;
-	char **test;
-	
-	i = 0;
-	tmp = NULL;
-	tmp1 = NULL;
-	test = ft_split(cmd,' ');
-	while (path && path[i])
-	{	
-		tmp1 = ft_strjoin(ft_strdup(path[i]),"/");
-		tmp = ft_strjoin(tmp1,test[0]);
-		if (access(tmp,F_OK & X_OK) == 0)
-			return (ft_free2d(test),tmp);
-		free(tmp);
-		i++;
-	}
-	return (ft_free2d(test),NULL);
-}
+	int	fd_cmd;
 
-char **get_args(char *cmd)
-{
-	int i;
-	char **args;
-	
-	i = 0;
-	args = ft_split(cmd,' ');
-	return (args);
-}
-
-int check_access(char *cmd)
-{
-	if (access(cmd,F_OK & X_OK) == 0)
-		return (1);
-	return (0);
-}
-
-int check_infile_access(char *file)
-{
-	if (access(file,F_OK & R_OK ) == 0)
-		return (1);
-	return (0);
-}
-
-int check_outfile_access(char *file)
-{
-	if (access(file,F_OK & W_OK ) == 0)
-		return (1);
-	return (0);
-}
-
-void execute(t_pipix *pipix,char *cmd,char **args,char **envp)
-{
-	// int fd_in;	
 	(void)pipix;
-	if (execve(cmd,args,envp) == -1)
-	{
-		if (errno == EISDIR)
-			perror("is a directory\n");
-		free(cmd);
-		ft_free2d(args);
-		perror("excve");
-	}
+	execve(cmd, args, envp);
+	fd_cmd = open(cmd, __O_DIRECTORY);
+	if (fd_cmd == EISDIR)
+		perror("is directory\n");
+	perror("excve :");
 }
 
-void first_exec(t_pipix *pipix)
+void	first_exec(t_pipix *pipix)
 {
 	if (pipix->fd_in == -1)
 		exit(1);
@@ -112,9 +57,9 @@ void first_exec(t_pipix *pipix)
 	close(pipix->fd[1]);
 }
 
-void pipe_handle(t_pipix *pipix,char *cmd,char **args,int i)
+void	pipe_handle(t_pipix *pipix, char *cmd, char **args, int i)
 {
-	pipix->pid[i-2] = fork();
+	pipix->pid[i - 2] = fork();
 	if (pipix->pid[i - 2] == 0)
 	{
 		if (i == 2)
@@ -126,22 +71,22 @@ void pipe_handle(t_pipix *pipix,char *cmd,char **args,int i)
 			close(pipix->fd[1]);
 			dup2(pipix->fd[0], 0);
 			close(pipix->fd[0]);
-			dup2(pipix->fd_out,1);
+			dup2(pipix->fd_out, 1);
 			close(pipix->fd_out);
 		}
 		if (!check_access(cmd))
 		{
-			ft_putstr_fd("command not found\n",2);
+			ft_putstr_fd("command not found\n", 2);
 			free(cmd);
 			ft_free2d(args);
 			exit(127);
 		}
-		execute(pipix,cmd,args,pipix->envp);
+		execute(pipix, cmd, args, pipix->envp);
 	}
 	else
 	{
 		if (i != 2)
-			(close(pipix->fd[0]), close(pipix->fd_out));	
+			(close(pipix->fd[0]), close(pipix->fd_out));
 		if (i != pipix->ac - 2)
 		{
 			close(pipix->fd_in);
@@ -149,9 +94,9 @@ void pipe_handle(t_pipix *pipix,char *cmd,char **args,int i)
 		}
 	}
 }
-void parse(int ac,char **av)
+void	parse(int ac, char **av)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (ac == 5)

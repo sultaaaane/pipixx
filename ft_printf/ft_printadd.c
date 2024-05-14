@@ -14,9 +14,9 @@
 
 static int	ft_putlong_base(unsigned long nb)
 {
-	size_t			i;
-	int				counter;
-	char			*base;
+	size_t	i;
+	int		counter;
+	char	*base;
 
 	counter = 0;
 	base = "0123456789abcdef";
