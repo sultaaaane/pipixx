@@ -6,16 +6,16 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 11:52:50 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/15 18:36:49 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/15 23:50:37 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipix.h"
 
-void pipe_handle_helper(t_pipix *pipix,int i,char *cmd,char **args)
+void	pipe_handle_helper(t_pipix *pipix, int i, char *cmd, char **args)
 {
 	if (i == 2)
-			first_exec(pipix,cmd,args);
+		first_exec(pipix, cmd, args);
 	if (i == pipix->ac - 2)
 	{
 		if (pipix->fd_out == -1)
@@ -38,7 +38,7 @@ void	pipe_handle(t_pipix *pipix, char *cmd, char **args, int i)
 	pipix->pid[i - 2] = fork();
 	if (pipix->pid[i - 2] == 0)
 	{
-		pipe_handle_helper(pipix, i,cmd,args);
+		pipe_handle_helper(pipix, i, cmd, args);
 		if (!check_access(cmd))
 		{
 			ft_putstr_fd("command not found\n", 2);
@@ -48,7 +48,6 @@ void	pipe_handle(t_pipix *pipix, char *cmd, char **args, int i)
 			exit(127);
 		}
 		execute(pipix, cmd, args, pipix->envp);
-
 	}
 	else
 	{
@@ -62,9 +61,27 @@ void	pipe_handle(t_pipix *pipix, char *cmd, char **args, int i)
 	}
 }
 
-int cmd_check(char *cmd)
+int	cmd_check(char *cmd)
 {
 	if (cmd && (cmd[0] == '.' || cmd[0] == '/'))
-		return (0);	
+		return (0);
 	return (1);
+}
+
+char	*cmd_get_helper(char **test, char *tmp, char **path)
+{
+	if (!cmd_check(test[0]))
+	{
+		tmp = ft_strdup(test[0]);
+		return (tmp);
+	}
+	if (!path)
+	{
+		if (test[0] == NULL)
+			return (NULL);
+		tmp = ft_strdup(test[0]);
+		if (access(test[0], F_OK & X_OK) == 0)
+			return (tmp);
+	}
+	return (NULL);
 }

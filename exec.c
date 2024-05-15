@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:31:38 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/15 17:25:37 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/15 23:51:57 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,9 @@ char	*get_cmd(char **path, char *cmd)
 	tmp = NULL;
 	tmp1 = NULL;
 	test = ft_split(cmd, ' ');
-	if (!cmd_check(test[0]))
-	{
-		tmp = ft_strdup(test[0]);
-		return (ft_free2d(test),ft_strdup(tmp));
-	}
-	if (!path)
-	{
-		tmp = ft_strdup(test[0]);
-		if (access(test[0], F_OK & X_OK) == 0)
-			return (ft_free2d(test), tmp);
-	}
+	tmp = cmd_get_helper(test, tmp, path);
+	if (tmp != NULL)
+		return (ft_free2d(test), tmp);
 	while (path && path[i])
 	{
 		tmp1 = ft_strjoin(ft_strdup(path[i]), "/");
@@ -43,7 +35,7 @@ char	*get_cmd(char **path, char *cmd)
 		free(tmp);
 		i++;
 	}
-	return (ft_free2d(test), NULL);
+	return (ft_free2d(test), tmp);
 }
 
 char	**get_args(char *cmd)

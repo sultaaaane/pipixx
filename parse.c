@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:30:46 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/15 18:35:56 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/15 22:38:51 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,25 @@ void	execute(t_pipix *pipix, char *cmd, char **args, char **envp)
 {
 	int	fd_cmd;
 
-	(void)pipix;
 	fd_cmd = -1;
 	execve(cmd, args, envp);
 	fd_cmd = open(cmd, __O_DIRECTORY);
-	if (fd_cmd == EISDIR)
+	if (fd_cmd != -1)
 	{
-		perror("is directory\n");
+		ft_putstr_fd("not found or directory\n", 2);
+		ft_free2d(args);
+		free(cmd);
+		ft_free2d(pipix->path);
 		exit(126);
 	}
-	perror("excve :");
-	exit(0);
+	ft_putstr_fd("command not found\n", 2);
+	ft_free2d(args);
+	free(cmd);
+	ft_free2d(pipix->path);
+	exit(127);
 }
 
-void	first_exec(t_pipix *pipix,char *cmd,char **args)
+void	first_exec(t_pipix *pipix, char *cmd, char **args)
 {
 	if (pipix->fd_in == -1)
 	{
@@ -59,7 +64,7 @@ void	first_exec(t_pipix *pipix,char *cmd,char **args)
 		ft_free2d(args);
 		ft_free2d(pipix->path);
 		exit(1);
-	}	
+	}
 	close(pipix->fd[0]);
 	dup2(pipix->fd_in, 0);
 	close(pipix->fd_in);
