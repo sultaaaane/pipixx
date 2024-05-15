@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 21:31:38 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/14 22:10:37 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:25:37 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char	*get_cmd(char **path, char *cmd)
 	tmp = NULL;
 	tmp1 = NULL;
 	test = ft_split(cmd, ' ');
-	if (test &&(test[0][0] == '.' || test[0][0] == '/') )
+	if (!cmd_check(test[0]))
 	{
 		tmp = ft_strdup(test[0]);
 		return (ft_free2d(test),ft_strdup(tmp));

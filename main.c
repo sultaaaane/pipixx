@@ -6,7 +6,7 @@
 /*   By: mbentahi <mbentahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 13:28:25 by mbentahi          #+#    #+#             */
-/*   Updated: 2024/05/14 16:25:40 by mbentahi         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:37:01 by mbentahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	pipix_init(t_pipix *pipix, char **envp, char **args, int ac)
 	pipix->envp = envp;
 	pipix->fd_in = open(args[1], O_RDONLY);
 	pipix->ac = ac;
+	pipix->path = get_path(envp);
 	if (pipix->fd_in == -1)
 		perror("pipix ");
 	pipix->file_in = args[1];
@@ -49,7 +50,6 @@ void	main_helper(t_pipix *pipix, int ac, char **av, char **path)
 int	main(int ac, char **av, char **env)
 {
 	t_pipix	pipix;
-	char	**path;
 	int		status;
 	int		i;
 
@@ -61,16 +61,16 @@ int	main(int ac, char **av, char **env)
 	else
 	{
 		pipix_init(&pipix, env, av, ac);
-		path = get_path(pipix.envp);
+		
 		pipe(pipix.fd);
-		main_helper(&pipix, ac, av, path);
+		main_helper(&pipix, ac, av, pipix.path);
 		i = 0;
 		while (i < 2)
 		{
 			waitpid(pipix.pid[i], &status, 0);
 			i++;
 		}
-		ft_free2d(path);
+		ft_free2d(pipix.path);
 	}
 	return ((((status) >> 8) & 0x0000ff));
 }
